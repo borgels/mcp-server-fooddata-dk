@@ -91,7 +91,7 @@ Both licences require credit, and the server attaches it to every result:
 ## Optional HTTP server
 
 `npm run dev:http` (and the published Docker image) serve `/mcp` over
-Streamable HTTP, gated by `MCP_HTTP_TOKEN`, plus a `/healthz` endpoint
+Streamable HTTP, gated by `MCP_HTTP_TOKEN` (compared in constant time), plus a `/healthz` endpoint
 reporting whether the Frida dataset loaded. There is no per-user state, so
 unlike the personal connectors this one needs no identity forwarding.
 

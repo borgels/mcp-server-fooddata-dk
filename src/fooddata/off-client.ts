@@ -1,6 +1,7 @@
 import { FoodDataHttpError } from '../errors.js';
 import { normalizeOffProduct, type FoodItem, type OffProduct } from './normalize.js';
 import { SearchCache } from './search-cache.js';
+import { encodePathParam } from '../path-params.js';
 
 export interface OffClientOptions {
   userAgent?: string;
@@ -49,7 +50,7 @@ export class OffClient {
       return cached ?? undefined;
     }
 
-    const url = `${this.productBaseUrl}/api/v2/product/${encodeURIComponent(barcode)}.json?fields=${FIELDS}`;
+    const url = `${this.productBaseUrl}/api/v2/product/${encodePathParam(barcode, 'barcode')}.json?fields=${FIELDS}`;
     const body = await this.getJson<{ status?: number; product?: OffProduct }>(url);
     const item = body.status === 1 && body.product ? normalizeOffProduct(body.product) : undefined;
     // Cache misses too — a barcode that isn't in OFF won't appear a minute later.
