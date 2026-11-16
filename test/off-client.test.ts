@@ -84,3 +84,19 @@ describe('OffClient', () => {
     await expect(client.getByBarcode('1')).rejects.toBeInstanceOf(FoodDataHttpError);
   });
 });
+
+describe('OffClient configuration', () => {
+  it('rejects an invalid OFF_TIMEOUT_MS instead of producing NaN', () => {
+    const original = process.env.OFF_TIMEOUT_MS;
+    process.env.OFF_TIMEOUT_MS = '15s';
+    try {
+      expect(() => new OffClient()).toThrow(/OFF_TIMEOUT_MS/);
+    } finally {
+      if (original === undefined) {
+        delete process.env.OFF_TIMEOUT_MS;
+      } else {
+        process.env.OFF_TIMEOUT_MS = original;
+      }
+    }
+  });
+});

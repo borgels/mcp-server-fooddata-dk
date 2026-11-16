@@ -1,4 +1,6 @@
+import { readEnvInteger } from '../config-env.js';
 import { FoodDataHttpError } from '../errors.js';
+import { PACKAGE_VERSION } from '../version.js';
 import { normalizeOffProduct, type FoodItem, type OffProduct } from './normalize.js';
 import { SearchCache } from './search-cache.js';
 import { encodePathParam } from '../path-params.js';
@@ -34,11 +36,11 @@ export class OffClient {
     this.userAgent =
       options.userAgent ??
       process.env.OFF_USER_AGENT ??
-      'mcp-server-fooddata-dk/0.1.0 (https://github.com/borgels/mcp-server-fooddata-dk)';
+      `mcp-server-fooddata-dk/${PACKAGE_VERSION} (https://github.com/borgels/mcp-server-fooddata-dk)`;
     this.productBaseUrl = options.productBaseUrl ?? process.env.OFF_PRODUCT_BASE_URL ?? 'https://world.openfoodfacts.org';
     this.searchBaseUrl = options.searchBaseUrl ?? process.env.OFF_SEARCH_BASE_URL ?? 'https://search.openfoodfacts.org';
     this.fetchImpl = options.fetchImpl ?? fetch;
-    this.timeoutMs = options.timeoutMs ?? Number(process.env.OFF_TIMEOUT_MS ?? 15_000);
+    this.timeoutMs = options.timeoutMs ?? readEnvInteger('OFF_TIMEOUT_MS', 15_000, { min: 1, max: 600_000 });
     this.cache = options.cache ?? new SearchCache();
   }
 
@@ -89,6 +91,7 @@ export class OffClient {
       signal: AbortSignal.timeout(this.timeoutMs),
     });
     if (!res.ok) {
+      await res.body?.cancel().catch(() => undefined);
       throw new FoodDataHttpError({
         status: res.status,
         url,
