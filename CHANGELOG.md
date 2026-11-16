@@ -19,9 +19,9 @@ HTTP transport hardening, upstream client hardening and dependency updates.
 - HTTP 401 carries `WWW-Authenticate: Bearer`; invalid JSON gets HTTP 400
   (JSON-RPC parse error) instead of 500; oversized bodies get 413 before
   being read.
-- New unauthenticated `GET /healthz`; graceful shutdown on SIGTERM/SIGINT.
-- `/healthz` keeps its payload (`ok`, `frida`, `fridaFoods`) and now answers
-  `GET`/`HEAD` only.
+- Graceful shutdown on SIGTERM/SIGINT.
+- The existing unauthenticated `/healthz` keeps its payload (`ok`, `frida`,
+  `fridaFoods`) and now answers `GET`/`HEAD` only.
 - Open Food Facts error responses are discarded unread, and error URLs no
   longer include the query string (search terms).
 - The default Open Food Facts User-Agent carries the package version.
@@ -33,7 +33,9 @@ HTTP transport hardening, upstream client hardening and dependency updates.
 
 Upgrade notes: deployments that bind to `0.0.0.0` must set `MCP_HTTP_TOKEN`
 (32+ characters) or the server exits at startup. Check that numeric variables
-hold plain integers.
+hold plain integers. A server bound to a loopback address behind a reverse
+proxy that forwards the public `Host` header now answers 403 on `/mcp` until
+that host name is listed in `MCP_ALLOWED_HOSTS`.
 
 ## 0.1.0
 
