@@ -1,5 +1,9 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { FridaSource } from '../src/fooddata/frida.js';
+import { defaultDatasetPath, FridaSource } from '../src/fooddata/frida.js';
 
 const dataset = {
   version: '5.5',
@@ -38,5 +42,25 @@ describe('FridaSource', () => {
     expect(empty.available).toBe(false);
     expect(empty.size).toBe(0);
     expect(empty.search('rugbrød')).toEqual([]);
+  });
+});
+
+describe('defaultDatasetPath', () => {
+  it('resolves data/frida.json next to dist/, independent of the working directory', () => {
+    const root = mkdtempSync(join(tmpdir(), 'frida-'));
+    try {
+      mkdirSync(join(root, 'dist'));
+      mkdirSync(join(root, 'data'));
+      writeFileSync(join(root, 'data', 'frida.json'), JSON.stringify(dataset));
+      const path = defaultDatasetPath(pathToFileURL(join(root, 'dist', 'stdio.js')).href);
+      expect(path).toBe(join(root, 'data', 'frida.json'));
+      expect(new FridaSource({ path }).size).toBe(3);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('finds the bundled dataset from the source tree', () => {
+    expect(new FridaSource({ path: defaultDatasetPath() }).available).toBe(true);
   });
 });

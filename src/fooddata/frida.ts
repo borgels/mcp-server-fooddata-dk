@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { normalizeFridaFood, type FoodItem, type FridaFood } from './normalize.js';
 
 /**
@@ -27,7 +28,7 @@ export class FridaSource {
   readonly version?: string;
 
   constructor(options: { path?: string; dataset?: FridaDataset } = {}) {
-    const dataset = options.dataset ?? loadDataset(options.path ?? process.env.FRIDA_DATA_PATH ?? './data/frida.json');
+    const dataset = options.dataset ?? loadDataset(options.path ?? process.env.FRIDA_DATA_PATH ?? defaultDatasetPath());
     this.version = dataset?.version;
     this.foods = (dataset?.foods ?? []).map(normalizeFridaFood);
   }
@@ -67,6 +68,16 @@ export class FridaSource {
   getById(id: string): FoodItem | undefined {
     return this.foods.find(food => food.id === id);
   }
+}
+
+/**
+ * The bundled dataset, resolved relative to this module rather than the
+ * working directory (npx starts the server from anywhere): `dist/*.js` in
+ * the package and the container, `src/fooddata/frida.ts` in a checkout.
+ */
+export function defaultDatasetPath(moduleUrl: string = import.meta.url): string {
+  const candidates = ['../data/frida.json', '../../data/frida.json'].map(p => fileURLToPath(new URL(p, moduleUrl)));
+  return candidates.find(p => existsSync(p)) ?? candidates[0]!;
 }
 
 function loadDataset(path: string): FridaDataset | undefined {
