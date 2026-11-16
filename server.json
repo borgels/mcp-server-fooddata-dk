@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.borgels/mcp-server-fooddata-dk",
+  "title": "FoodData DK",
+  "description": "Danish food and nutrition data from Open Food Facts and the DTU Frida database.",
+  "repository": {
+    "url": "https://github.com/borgels/mcp-server-fooddata-dk",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "mcp-server-fooddata-dk",
+      "version": "0.2.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "OFF_USER_AGENT",
+          "description": "User-Agent sent to Open Food Facts, with a contact address.",
+          "placeholder": "yourapp/1.0 (you@example.com)"
+        },
+        {
+          "name": "FRIDA_DATA_PATH",
+          "description": "Path of the DTU Frida dataset (optional).",
+          "format": "filepath"
+        }
+      ]
+    }
+  ]
+}
