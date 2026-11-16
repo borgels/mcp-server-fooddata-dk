@@ -6,7 +6,17 @@ export class FoodDataHttpError extends Error {
     super([`Food data request failed with HTTP ${input.status}`, input.fallbackMessage].filter(Boolean).join(' | '));
     this.name = 'FoodDataHttpError';
     this.status = input.status;
-    this.url = input.url;
+    // Origin and path only: the query string carries the user's search terms.
+    this.url = urlWithoutQuery(input.url);
+  }
+}
+
+function urlWithoutQuery(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return `${parsed.origin}${parsed.pathname}`;
+  } catch {
+    return '[invalid URL]';
   }
 }
 

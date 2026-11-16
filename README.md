@@ -11,8 +11,7 @@ Read-only, no user accounts, no credentials. Built as a companion to
 server supplies the real Danish numbers and the calling model logs the meal
 there with the serving scaled to match.
 
-This is an independent, unofficial project, not affiliated with Open Food Facts
-or DTU.
+This is an independent, unofficial project. It is not developed, endorsed or supported by Open Food Facts or DTU.
 
 ## Why two sources
 
@@ -91,9 +90,38 @@ Both licences require credit, and the server attaches it to every result:
 ## Optional HTTP server
 
 `npm run dev:http` (and the published Docker image) serve `/mcp` over
-Streamable HTTP, gated by `MCP_HTTP_TOKEN` (compared in constant time), plus a `/healthz` endpoint
-reporting whether the Frida dataset loaded. There is no per-user state, so
-unlike the personal connectors this one needs no identity forwarding.
+Streamable HTTP, gated by `MCP_HTTP_TOKEN` (compared in constant time), plus an
+unauthenticated `GET /healthz` endpoint reporting whether the Frida dataset
+loaded. There is no per-user state and no identity forwarding.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `MCP_HTTP_HOST` (or `HOST`) | `127.0.0.1` | Bind address. |
+| `PORT` | `3000` | Listen port (1-65535). |
+| `MCP_HTTP_TOKEN` | unset | Bearer token required on `/mcp`; at least 32 printable ASCII characters. Required when binding to a non-loopback address or with `MCP_ALLOW_ANY_ORIGIN=true`. Generate one with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. |
+| `MCP_HTTP_ALLOW_UNAUTHENTICATED` | `false` | Start without a token on a non-loopback bind anyway (only when access is restricted by other means). |
+| `MCP_ALLOWED_ORIGINS` | localhost origins | Comma-separated exact `Origin` values allowed. Requests without `Origin` (server-to-server) are allowed. |
+| `MCP_ALLOW_ANY_ORIGIN` | `false` | Allow any `Origin` (requires a token). |
+| `MCP_ALLOWED_HOSTS` | see meaning | Comma-separated host names accepted in the `Host` header. By default a loopback bind only accepts localhost names and its bind address; other binds do not check `Host`. |
+| `MCP_MAX_BODY_BYTES` | `10485760` | Maximum request body size. |
+| `MCP_AUTH_FAILURE_LIMIT` | `20` | Failed authentication attempts per client address and window before further failures get HTTP 429; `0` disables. Requests with a valid token are never throttled. |
+| `MCP_AUTH_FAILURE_WINDOW_MS` | `60000` | Window for the limit above. |
+
+Invalid numeric or boolean values (including `OFF_TIMEOUT_MS`, 1-600000,
+default 15000) stop the server at startup with a message naming the variable.
+
+## Security model
+
+- The server holds no upstream credentials; all callers share its outbound
+  IP address and therefore Open Food Facts' per-IP rate limits.
+- `MCP_HTTP_TOKEN` is a single shared secret that authenticates callers of
+  the HTTP endpoint; it does not identify individual users. Per-user
+  authentication and authorization belong in an identity-aware gateway or
+  proxy in front of this server.
+- Every tool is read-only over public reference data. Search terms and
+  barcodes are sent to Open Food Facts.
+- The HTTP server does not terminate TLS. Run it on loopback or a private
+  network, behind a TLS-terminating proxy when traffic leaves the host.
 
 ## Verification
 
