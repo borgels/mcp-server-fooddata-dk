@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Published to npm and the MCP Registry from tagged releases.
+- The bundled Frida dataset is found relative to the package instead of the working directory, so it loads when started with npx.
 
 ## 0.2.0 (2026-11-16)
 

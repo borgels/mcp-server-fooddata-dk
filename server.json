@@ -26,7 +26,7 @@
         },
         {
           "name": "FRIDA_DATA_PATH",
-          "description": "Path of the DTU Frida dataset (optional).",
+          "description": "Path of a DTU Frida dataset. Defaults to the dataset bundled with the package.",
           "format": "filepath"
         }
       ]

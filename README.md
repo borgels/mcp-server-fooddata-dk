@@ -84,8 +84,10 @@ detected and reported as such.
 Both licences require credit, and the server attaches it to every result:
 
 - **Open Food Facts** — Open Database License (ODbL).
-- **DTU Frida** — *Frida Food Data (https://frida.fooddata.dk), National Food
-  Institute, Technical University of Denmark.*
+- **DTU Frida** — CC BY 4.0. *Frida Food Data (https://frida.fooddata.dk),
+  National Food Institute, Technical University of Denmark.* The package
+  bundles a JSON conversion of Frida 5.5 in `data/frida.json`; see
+  [`data/README.md`](data/README.md).
 
 ## Optional HTTP server
 

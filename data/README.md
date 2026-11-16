@@ -32,6 +32,13 @@ Current bundle: **Frida 5.5, 1,381 foods.**
 The server runs fine without this file — it simply serves Open Food Facts
 results and reports Frida as unavailable via `fooddata_sources`.
 
+## Licence
+
+The Frida dataset is published by DTU under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+(<https://doi.org/10.11583/DTU.29500682>). `frida.json` is a conversion of a
+subset of its columns to JSON; it is not endorsed by DTU.
+
 **Attribution is required** whenever Frida data is displayed or used:
 
 > Frida Food Data (https://frida.fooddata.dk), National Food Institute,
