@@ -1,6 +1,6 @@
 {
   "name": "mcp-server-fooddata-dk",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "mcpName": "io.github.borgels/mcp-server-fooddata-dk",
   "description": "MCP server for Danish food/nutrition data — Open Food Facts (branded, barcode) plus the DTU Frida composition database (generic Danish foods).",
   "type": "module",
@@ -13,6 +13,7 @@
     "data",
     "README.md",
     "LICENSE",
+    "NOTICE",
     "CHANGELOG.md",
     ".env.example"
   ],
@@ -42,7 +43,7 @@
     "denmark"
   ],
   "author": "",
-  "license": "Apache-2.0",
+  "license": "FSL-1.1-ALv2",
   "engines": {
     "node": ">=20.11"
   },
